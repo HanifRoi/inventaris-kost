@@ -1,0 +1,32 @@
+services:
+  laravel.test:
+    image: php:8.4-apache
+    ports:
+      - "80:80"
+    environment:
+      WWWUSER: '1000'
+      LARAVEL_SAIL: 1
+    volumes:
+      - .:/var/www/html
+    networks:
+      - sail
+  mysql:
+    image: mysql/mysql-server:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'inventaris_kost'
+      MYSQL_USER: 'sail'
+      MYSQL_PASSWORD: 'password'
+    volumes:
+      - sail-mysql:/var/lib/mysql
+    networks:
+      - sail
+networks:
+  sail:
+    driver: bridge
+volumes:
+  sail-mysql:
+    driver: local

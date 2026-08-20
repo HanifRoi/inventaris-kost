@@ -23,6 +23,7 @@
                 <th>Kategori</th>
                 <th>Kondisi</th>
                 <th>Lokasi</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,16 @@
                     <td>{{ $item->category->name }}</td>
                     <td>{{ $item->condition }}</td>
                     <td>{{ $item->location }}</td>
+                    <td>
+                        <a href="{{ route('items.edit', $item->id) }}">Edit</a> | 
+                        
+                        <!-- Form untuk tombol Hapus -->
+                        <form action="{{ route('items.destroy', $item->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin bosku mau menghapus barang ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="color: red; cursor: pointer;">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
             @empty
                 <tr>

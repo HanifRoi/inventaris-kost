@@ -63,24 +63,45 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Item $item)
     {
-        //
+        // Ambil semua kategori untuk pilihan di dropdown
+        $categories = \App\Models\Category::all();
+        
+        // Tampilkan halaman edit dan kirim data $item dan $categories
+        return view('items.edit', compact('item', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, Item $item)
     {
-        //
+        $request->validate([
+            // Abaikan pengecekan unique untuk ID barang ini sendiri
+            'code_item'   => 'required|unique:items,code_item,' . $item->id, 
+            'name'        => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'stock'       => 'required|integer|min:1',
+            'condition'   => 'required|in:Baik,Perbaikan,Rusak',
+            'location'    => 'required|string|max:255',
+            'notes'       => 'nullable|string',
+        ]);
+
+        $item->update($request->all());
+
+        return redirect()->route('items.index')->with('success', 'Data barang berhasil diupdate!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Item $item)
     {
-        //
+        // Hapus data barang dari database
+        $item->delete();
+
+        // Kembalikan ke halaman index dengan pesan sukses
+        return redirect()->route('items.index')->with('success', 'Data barang berhasil dihapus!');
     }
 }

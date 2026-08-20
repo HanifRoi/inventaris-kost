@@ -7,7 +7,11 @@
 </head>
 <body>
     <h1>Daftar Barang Inventaris Kost</h1>
-    
+    @if(session('success'))
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border: 1px solid #c3e6cb;">
+            {{ session('success') }}
+        </div>
+    @endif
     <a href="{{ route('items.create') }}">Tambah Barang Baru</a>
 
     <table border="1" cellpadding="10" cellspacing="0" style="margin-top: 20px; width: 100%;">

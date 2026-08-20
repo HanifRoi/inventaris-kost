@@ -22,7 +22,11 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        // Panggil model Category dulu di atas sendiri jika belum ada:
+        // use App\Models\Category;
+        
+        $categories = \App\Models\Category::all();
+        return view('items.create', compact('categories'));
     }
 
     /**
@@ -30,7 +34,22 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 1. Validasi data yang dikirim dari form
+        $request->validate([
+            'code_item'   => 'required|unique:items,code_item', // Kode barang harus unik (tidak boleh sama)
+            'name'        => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'stock'       => 'required|integer|min:1',
+            'condition'   => 'required|in:Baik,Perbaikan,Rusak',
+            'location'    => 'required|string|max:255',
+            'notes'       => 'nullable|string',
+        ]);
+
+        // 2. Simpan data ke database
+        Item::create($request->all());
+
+        // 3. Kembalikan ke halaman daftar barang dengan pesan sukses
+        return redirect()->route('items.index')->with('success', 'Barang baru berhasil ditambahkan!');
     }
 
     /**
